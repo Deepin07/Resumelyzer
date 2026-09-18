@@ -9,9 +9,7 @@ function FeatureCard({ title, description }) {
   );
 }
 
-
-
-function ResumeUpload() {
+function ResumeUpload({ onBack }) {
   const inputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
@@ -26,59 +24,61 @@ function ResumeUpload() {
       validateAndSetfile(file);
     }
   }
-  function validateAndSetfile(file){
+  function validateAndSetfile(file) {
     const allowedExtensions = [".pdf", ".docx", ".txt"];
     const maxFileSize = 10 * 1024 * 1024;
 
-    const extension = file.name.slice(file.name.indexOf(".")).toLowerCase()
+    const extension = file.name.slice(file.name.indexOf(".")).toLowerCase();
 
-    if(!allowedExtensions.includes(extension)){
-        setError("Please upload a PDF, DOCX, or TXT file.")
-        setSelectedFile(null);
-        return;
+    if (!allowedExtensions.includes(extension)) {
+      setError("Please upload a PDF, DOCX, or TXT file.");
+      setSelectedFile(null);
+      return;
     }
 
-    if(file.size > maxFileSize){
-        setError("File must be 10MB or smaller");
-        setSelectedFile(null)
+    if (file.size > maxFileSize) {
+      setError("File must be 10MB or smaller");
+      setSelectedFile(null);
     }
 
     setSelectedFile(file);
     setError("");
   }
 
-  function handleDragOver(event){
+  function handleDragOver(event) {
     event.preventDefault();
     setIsDragging(true);
   }
 
-  function handleDragLeave(){
+  function handleDragLeave() {
     setIsDragging(false);
   }
 
-  function handleDrop(event){
+  function handleDrop(event) {
     event.preventDefault();
     setIsDragging(false);
 
     const file = event.dataTransfer.files?.[0];
 
-    if(file){
-        validateAndSetfile(file)
+    if (file) {
+      validateAndSetfile(file);
     }
   }
 
-  function loadSampleJob(){
-    setJobDescription(`We are looking for a Senior Frontend Engineer with 4+ years of experience in React, JavaScript, TypeScript, responsive design, REST APIs, and modern frontend development practices.`)
+  function loadSampleJob() {
+    setJobDescription(
+      `We are looking for a Senior Frontend Engineer with 4+ years of experience in React, JavaScript, TypeScript, responsive design, REST APIs, and modern frontend development practices.`,
+    );
   }
   const canAnalyze = selectedFile && jobDescription.trim().length > 0;
 
-  function handleSubmit(event){
+  function handleSubmit(event) {
     event.preventDefault();
 
-    if(!canAnalyze) return;
+    if (!canAnalyze) return;
     console.log({
-        filename: selectedFile.name,
-        jobDescription,
+      filename: selectedFile.name,
+      jobDescription,
     });
   }
 
@@ -93,8 +93,18 @@ function ResumeUpload() {
 
   return (
     <main className="min-h-screen bg-[#faf8ff] text-[#131b2e]">
-      <header className="border-b border-slate-200 bg-white/50 px-6 py-5 shadow-sm">
-        <p className="font-display text-xl font-semibold">Resumelyzer</p>
+      <header className="relative border-b border-slate-200 bg-white/50 px-6 py-5 shadow-sm">
+        <button
+          type="button"
+          onClick={onBack}
+          className="absolute left-6 top-1/2 -translate-y-1/2 text-sm font-medium text-[#464555] hover:text-[#131b2e]"
+        >
+          ←  Back
+        </button>
+
+        <p className="text-center font-display text-xl font-semibold">
+          Resumelyzer
+        </p>
       </header>
 
       <section className="mx-auto w-full max-w-[768px] px-4 py-14">
