@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import ReportPreview from "./ReportPreview";
 
 const metrics = [
@@ -25,7 +27,7 @@ const metrics = [
   },
 ];
 
-function LandingPage({ onStart }) {
+function LandingPage() {
   return (
     <main className="min-h-screen bg-white text-[#131b2e]">
       <header className="border-b border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-12">
@@ -54,13 +56,12 @@ function LandingPage({ onStart }) {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={onStart}
+            <Link
+              to="/upload"
               className="rounded-lg bg-[#3525cd] px-6 py-3 font-display font-semibold text-white shadow-lg shadow-[#3525cd]/20 transition hover:bg-[#281aa8]"
             >
               Scan My Resume for Free →
-            </button>
+            </Link>
 
             <button
               type="button"
@@ -126,17 +127,17 @@ function LandingPage({ onStart }) {
 
           <p className="mt-5 text-base leading-7 text-[#dad7ff]">
             Join over 250,000 professionals who tailored their resumes, escaped
-            the ATS filter, and increased their interview call rate by up to 94%.
+            the ATS filter, and increased their interview call rate by up to
+            94%.
           </p>
 
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <button
-              type="button"
-              onClick={onStart}
+            <Link
+              to="/upload"
               className="rounded-lg bg-white px-6 py-3 font-display font-semibold text-[#3525cd] shadow-lg"
             >
               Scan My Resume for Free →
-            </button>
+            </Link>
 
             <button
               type="button"
@@ -147,8 +148,8 @@ function LandingPage({ onStart }) {
           </div>
 
           <p className="mt-5 text-xs text-[#dad7ff]/80">
-            Free scan includes 1 full ATS match score, keyword gap analysis,
-            and 3 AI bullet point rewrites.
+            Free scan includes 1 full ATS match score, keyword gap analysis, and
+            3 AI bullet point rewrites.
           </p>
         </div>
       </section>

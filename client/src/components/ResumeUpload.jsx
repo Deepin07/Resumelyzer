@@ -1,3 +1,4 @@
+import { Link, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 
 function FeatureCard({ title, description }) {
@@ -9,12 +10,13 @@ function FeatureCard({ title, description }) {
   );
 }
 
-function ResumeUpload({ onBack }) {
+function ResumeUpload() {
   const inputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const navigate = useNavigate();
 
   // File handling to upload a file in the required format and also under a certian size
   function handleFileChange(event) {
@@ -28,7 +30,7 @@ function ResumeUpload({ onBack }) {
     const allowedExtensions = [".pdf", ".docx", ".txt"];
     const maxFileSize = 10 * 1024 * 1024;
 
-    const extension = file.name.slice(file.name.indexOf(".")).toLowerCase();
+    const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
 
     if (!allowedExtensions.includes(extension)) {
       setError("Please upload a PDF, DOCX, or TXT file.");
@@ -76,10 +78,7 @@ function ResumeUpload({ onBack }) {
     event.preventDefault();
 
     if (!canAnalyze) return;
-    console.log({
-      filename: selectedFile.name,
-      jobDescription,
-    });
+    navigate("/analysis/demo")
   }
 
   function removeFile() {
@@ -94,13 +93,12 @@ function ResumeUpload({ onBack }) {
   return (
     <main className="min-h-screen bg-[#faf8ff] text-[#131b2e]">
       <header className="relative border-b border-slate-200 bg-white/50 px-6 py-5 shadow-sm">
-        <button
-          type="button"
-          onClick={onBack}
+        <Link
+          to="/"
           className="absolute left-6 top-1/2 -translate-y-1/2 text-sm font-medium text-[#464555] hover:text-[#131b2e]"
         >
-          ←  Back
-        </button>
+          ← Back
+        </Link>
 
         <p className="text-center font-display text-xl font-semibold">
           Resumelyzer
@@ -221,12 +219,12 @@ function ResumeUpload({ onBack }) {
           </div>
 
           <div className="mt-6 flex items-center justify-between gap-4">
-            <button
-              type="button"
+            <Link
+              to="/"
               className="text-sm font-medium text-[#464555] hover:text-[#131b2e]"
             >
               ← Back to Overview
-            </button>
+            </Link>
 
             <button
               type="submit"
