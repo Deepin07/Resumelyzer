@@ -75,8 +75,7 @@ function LandingPage() {
             <span>◉ No credit card required</span>
             <span>•</span>
             <span>◷ 60-second instant audit</span>
-            <span>•</span>
-            <span>◉ Zero data retention</span>
+            
           </div>
 
           <div className="mt-7 flex items-center gap-3">

@@ -235,10 +235,7 @@ function ResumeUpload() {
             </button>
           </div>
 
-          <p className="mt-5 text-center text-[11px] text-[#464555]">
-            Ephemeral Scan • Zero Data Retention • 100% Client-Side Encryption
-            Safe
-          </p>
+          
         </form>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
