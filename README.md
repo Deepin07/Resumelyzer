@@ -23,12 +23,10 @@ AI Resumelyzer is an AI-powered resume analysis platform that helps job seekers 
 
 ## Tech Stack
 
-> Update this section to reflect the technologies used in your project.
-
-- **Frontend:** React / Next.js / HTML / CSS / JavaScript
+- **Frontend:** React / HTML / CSS / JavaScript / TailwindCSS
 - **Backend:** Node.js / Express
 - **AI Integration:** OpenAI API
-- **Database:** MongoDB / Firebase / PostgreSQL
+- **Database:** PostgreSQL
 - **Authentication:** Firebase Auth / JWT
 - **Deployment:** Vercel / Render / Netlify
 
