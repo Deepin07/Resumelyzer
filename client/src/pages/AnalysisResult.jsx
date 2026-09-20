@@ -69,7 +69,7 @@ function AnalysisResult() {
         <ScoreSummary analysis={sampleAnalysis} />
 
         <section className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.95fr)]">
-          <ResumePreview />
+          <ResumePreview resume = {sampleAnalysis.resume}/>
 
           <FixesPanel
             fixes={visibleFixes}
