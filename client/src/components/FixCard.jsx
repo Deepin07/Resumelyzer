@@ -1,5 +1,4 @@
-
-function FixCard({fix, isAccepted, onAccept}){
+function FixCard({ fix, isAccepted, onAccept }) {
   return (
     <article className="rounded-xl border-l-4 border-[#3525cd] bg-white p-5 shadow-md">
       <div className="flex items-start justify-between gap-4">
@@ -27,17 +26,28 @@ function FixCard({fix, isAccepted, onAccept}){
           <p className="mt-1">{fix.suggestion}</p>
         </div>
       )}
-
+      {fix.missingSkills && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {fix.missingSkills.map((skill) => (
+            <span
+              key={skill}
+              className="rounded bg-red-100 px-2 py-1 text-xs font-medium text-red-700"
+            >
+              + {skill}
+            </span>
+          ))}
+        </div>
+      )}
       <button
         type="button"
         disabled={isAccepted}
         onClick={() => onAccept(fix.id)}
         className="mt-4 rounded-lg bg-[#3525cd] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
       >
-        {isAccepted ? "Accepted" : "✓ Accept Rewrite"}
+        {isAccepted ? "Accepted" : fix.missingSkills ? "⊕ Quick Add to Skills & Summary" : "✓ Accept Rewrite"}
       </button>
     </article>
   );
 }
 
-export default FixCard
+export default FixCard;

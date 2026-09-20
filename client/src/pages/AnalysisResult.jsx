@@ -6,7 +6,6 @@ import FixesPanel from "../components/FixesPanel";
 import SkillsMapping from "../components/SkillsMapping";
 
 
-
 function AnalysisResult() {
 
   const [ activeFilter, setActiveFilter ] = useState("All");
