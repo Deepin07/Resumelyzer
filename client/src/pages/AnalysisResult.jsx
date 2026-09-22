@@ -5,24 +5,63 @@ import ResumePreview from "../components/ResumePreview";
 import FixesPanel from "../components/FixesPanel";
 import SkillsMapping from "../components/SkillsMapping";
 
+function applyFixesToResume(currentAnalysis, fixIds) {
+  const fixesToApply = currentAnalysis.fixes.filter(
+    (fix) => fixIds.includes(fix.id) && fix.resumeBulletId && fix.suggestion,
+  );
+
+  return {
+    ...currentAnalysis,
+    resume: {
+      ...currentAnalysis.resume,
+      experience: currentAnalysis.resume.experience.map((job) => ({
+        ...job,
+        bullets: job.bullets.map((bullet) => {
+          const matchingFix = fixesToApply.find(
+            (fix) => fix.resumeBulletId === bullet.id,
+          );
+          if (!matchingFix) return bullet;
+          return {
+            ...bullet,
+            text: matchingFix.suggestion,
+            flag: null,
+            suggestion: null,
+            applied: true,
+          };
+        }),
+      })),
+    },
+  };
+}
 
 function AnalysisResult() {
-
-  const [ activeFilter, setActiveFilter ] = useState("All");
+  const [analysis, setAnalysis] = useState(sampleAnalysis);
+  const [activeFilter, setActiveFilter] = useState("All");
   const [acceptedFixIds, setAcceptedFixIds] = useState([]);
 
-  const visibleFixes = activeFilter === "All" ? sampleAnalysis.fixes : sampleAnalysis.fixes.filter((fix) => fix.category === activeFilter);
+  const visibleFixes =
+    activeFilter === "All"
+      ? analysis.fixes
+      : analysis.fixes.filter((fix) => fix.category === activeFilter);
 
-  function acceptFix(fixId){
+  function acceptFix(fixId) {
     setAcceptedFixIds((currentIds) => {
       if (currentIds.includes(fixId)) return currentIds;
-      return [...currentIds, fixId];
-    })
 
+      return [...currentIds, fixId];
+    });
+
+    setAnalysis((currentAnalysis) =>
+      applyFixesToResume(currentAnalysis, [fixId]),
+    );
   }
 
-  function acceptAllFixes(){
-    setAcceptedFixIds(sampleAnalysis.fixes.map((fix) => fix.id));
+  function acceptAllFixes() {
+    const allFixIds = analysis.fixes.map((fix) => fix.id);
+    setAcceptedFixIds(allFixIds);
+    setAnalysis((currentAnalysis) =>
+      applyFixesToResume(currentAnalysis, allFixIds),
+    );
   }
 
   return (
@@ -66,10 +105,10 @@ function AnalysisResult() {
           </p>
         </section>
 
-        <ScoreSummary analysis={sampleAnalysis} />
+        <ScoreSummary analysis={analysis} />
 
         <section className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.95fr)]">
-          <ResumePreview resume = {sampleAnalysis.resume}/>
+          <ResumePreview resume={analysis.resume} />
 
           <FixesPanel
             fixes={visibleFixes}
@@ -80,7 +119,7 @@ function AnalysisResult() {
           />
         </section>
 
-        <SkillsMapping skillGroups={sampleAnalysis.skillGroups} />
+        <SkillsMapping skillGroups={analysis.skillGroups} />
       </div>
     </main>
   );

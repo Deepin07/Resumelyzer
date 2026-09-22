@@ -6,8 +6,8 @@ function ResumePreview({ resume }) {
   const isAnnotated = viewMode === "annotated";
 
   return (
-    <section>
-      <div>
+    <section className="overflow-hidden rounded-xl bg-white shadow-md">
+      <div className="flex items-center justify-between border-b-4 border-[#3525cd] px-4 py-2">
         <div>
           <button
             type="button"
@@ -76,7 +76,7 @@ function ResumePreview({ resume }) {
                 <ul className="mt-4 space-y-3">
                   {job.bullets.map((bullet) => (
                     <li
-                      key={bullet.text}
+                      key={bullet.id}
                       className={`rounded-lg p-3 text-sm leading-6 ${
                         isAnnotated && bullet.flag ? "bg-[#f2f3ff]" : ""
                       }`}
@@ -86,6 +86,11 @@ function ResumePreview({ resume }) {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-start justify-between gap-2">
+                            {bullet.applied && (
+                              <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">
+                                Applied
+                              </span>
+                            )}
                             <p>{bullet.text}</p>
 
                             {isAnnotated && bullet.flag && (
