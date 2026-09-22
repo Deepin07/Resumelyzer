@@ -78,6 +78,16 @@ export const sampleAnalysis = {
         "GraphQL (API Integration)",
         "Core Web Vitals (INP / LCP)",
       ],
+      skillUpdates: [
+        {
+          groupName: "Core Technologies",
+          skillName: "GraphQL",
+        },
+        {
+          groupName: "Domain & Architecture",
+          skillName: "Core Web Vitals",
+        },
+      ],
     },
   ],
 

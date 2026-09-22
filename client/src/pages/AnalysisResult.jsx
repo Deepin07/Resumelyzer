@@ -34,6 +34,30 @@ function applyFixesToResume(currentAnalysis, fixIds) {
   };
 }
 
+function applyFixesToSkills(currentAnalysis, fixIds){
+  const skillsUpdates = currentAnalysis.fixes.filter((fix) => fixIds.includes(fix.id)).flatMap((fix) => fix.skillsUpdates || []);
+
+  return {
+    ...currentAnalysis,
+    skillGroups: currentAnalysis.skillGroups.map((group) => ({
+      ...group,
+      skills: group.skills.map((skill) =>{
+        const shouldMarkedAsMatched = skillsUpdates.some(
+          (update) => 
+            update.groupName === group.name && 
+            update.skillName === skill.name,
+        );
+        if(!shouldMarkedAsMatched) return skill;
+
+        return{
+          ...skill,
+          matched: true,
+        }
+      })
+    }))
+  }
+}
+
 function AnalysisResult() {
   const [analysis, setAnalysis] = useState(sampleAnalysis);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -51,17 +75,22 @@ function AnalysisResult() {
       return [...currentIds, fixId];
     });
 
-    setAnalysis((currentAnalysis) =>
-      applyFixesToResume(currentAnalysis, [fixId]),
-    );
+    setAnalysis((currentAnalysis) => {
+      const resumeUpdated = applyFixesToResume(currentAnalysis, [fixId]);
+      return applyFixesToSkills(resumeUpdated, [fixId]);
+    })
   }
 
   function acceptAllFixes() {
     const allFixIds = analysis.fixes.map((fix) => fix.id);
     setAcceptedFixIds(allFixIds);
-    setAnalysis((currentAnalysis) =>
-      applyFixesToResume(currentAnalysis, allFixIds),
-    );
+    setAnalysis((currentAnalysis) =>{
+      const resumeUpdated = applyFixesToResume(
+        currentAnalysis,
+        allFixIds,
+      );
+      return applyFixesToSkills(resumeUpdated, allFixIds);
+    });
   }
 
   return (
@@ -91,7 +120,7 @@ function AnalysisResult() {
         <section className="mb-5">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-display text-base font-semibold">
-              {sampleAnalysis.fileName}
+              {analysis.fileName}
             </h1>
 
             <span className="rounded-full bg-[#e2e7ff] px-2 py-1 text-[11px] font-semibold">
@@ -100,8 +129,8 @@ function AnalysisResult() {
           </div>
 
           <p className="mt-1 text-sm text-[#464555]">
-            Targeting: <strong>{sampleAnalysis.targetRole}</strong> ·{" "}
-            {sampleAnalysis.uploadedLabel}
+            Targeting: <strong>{analysis.targetRole}</strong> ·{" "}
+            {analysis.uploadedLabel}
           </p>
         </section>
 
