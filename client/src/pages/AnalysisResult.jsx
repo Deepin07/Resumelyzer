@@ -35,14 +35,14 @@ function applyFixesToResume(currentAnalysis, fixIds) {
 }
 
 function applyFixesToSkills(currentAnalysis, fixIds){
-  const skillsUpdates = currentAnalysis.fixes.filter((fix) => fixIds.includes(fix.id)).flatMap((fix) => fix.skillsUpdates || []);
+  const skillUpdates = currentAnalysis.fixes.filter((fix) => fixIds.includes(fix.id)).flatMap((fix) => fix.skillUpdates || []);
 
   return {
     ...currentAnalysis,
     skillGroups: currentAnalysis.skillGroups.map((group) => ({
       ...group,
       skills: group.skills.map((skill) =>{
-        const shouldMarkedAsMatched = skillsUpdates.some(
+        const shouldMarkedAsMatched = skillUpdates.some(
           (update) => 
             update.groupName === group.name && 
             update.skillName === skill.name,

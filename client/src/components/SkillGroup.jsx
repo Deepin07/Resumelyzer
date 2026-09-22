@@ -17,7 +17,7 @@ function SkillGroup({group}){
             key={skill.name}
             className={`rounded-md px-2.5 py-1 text-xs font-medium ${
               skill.matched
-                ? "bg-[#f2f3ff] text-[#131b2e]"
+                ? "bg-[#e2e7ff] text-[#3525cd]"
                 : "bg-red-100 text-red-700"
             }`}
           >
