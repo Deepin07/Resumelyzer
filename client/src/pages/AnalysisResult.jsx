@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { sampleAnalysis } from "../data/sampleAnalysis";
 import ScoreSummary from "../components/ScoreSummary";
 import ResumePreview from "../components/ResumePreview";
@@ -59,7 +60,10 @@ function applyFixesToSkills(currentAnalysis, fixIds){
 }
 
 function AnalysisResult() {
-  const [analysis, setAnalysis] = useState(sampleAnalysis);
+  const location = useLocation();
+  const [analysis, setAnalysis] = useState(
+    location.state?.analysis ?? sampleAnalysis,
+  );
   const [activeFilter, setActiveFilter] = useState("All");
   const [acceptedFixIds, setAcceptedFixIds] = useState([]);
 

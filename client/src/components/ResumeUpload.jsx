@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
+import { analyzeResume } from "../services/analysisApi";
 
 function FeatureCard({ title, description }) {
   return (
@@ -12,11 +13,13 @@ function FeatureCard({ title, description }) {
 
 function ResumeUpload() {
   const inputRef = useRef(null);
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // File handling to upload a file in the required format and also under a certian size
   function handleFileChange(event) {
@@ -75,20 +78,31 @@ function ResumeUpload() {
   }
   const canAnalyze = selectedFile && jobDescription.trim().length > 0;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    if (!canAnalyze || isLoading) return;
 
-    if (!canAnalyze) return;
-    navigate("/analysis/demo")
+    setIsLoading(true);
+    setSubmitError("");
+
+    try {
+      const data = await analyzeResume(selectedFile, jobDescription);
+      navigate(`/analysis/${data.id}`, { state: { analysis: data.analysis } });
+    } catch (err) {
+      const message =
+        err.response?.data?.error ||
+        "Could not reach the server. is it Running?";
+      setSubmitError(message);
+    } finally {
+      setIsLoading(false);
+    }
   }
-
   function removeFile() {
-    setSelectedFile(null);
-    setError("");
-
-    if (inputRef.current) {
+    if (inputRef.current){
       inputRef.current.value = "";
     }
+    setSelectedFile(null);
+    setError("");
   }
 
   return (
@@ -183,7 +197,9 @@ function ResumeUpload() {
               </div>
             )}
 
-            {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+            {submitError && (
+              <p className="mt-3 text-center text-sm text-red-700">{submitError}</p>
+            )}
           </div>
 
           <div className="mt-6">
@@ -229,14 +245,12 @@ function ResumeUpload() {
 
             <button
               type="submit"
-              disabled={!canAnalyze}
+              disabled={!canAnalyze || isLoading}
               className="rounded-lg bg-[#4f46e5] px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#3525cd] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Run Match Analysis →
+              {isLoading ? "Analyzing" : "Run Match Analysis →"}
             </button>
           </div>
-
-          
         </form>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
