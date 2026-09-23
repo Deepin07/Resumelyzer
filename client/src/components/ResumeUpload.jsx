@@ -41,6 +41,7 @@ function ResumeUpload() {
     if (file.size > maxFileSize) {
       setError("File must be 10MB or smaller");
       setSelectedFile(null);
+      return;
     }
 
     setSelectedFile(file);
