@@ -98,7 +98,7 @@ function ResumeUpload() {
     }
   }
   function removeFile() {
-    if (inputRef.current){
+    if (inputRef.current) {
       inputRef.current.value = "";
     }
     setSelectedFile(null);
@@ -198,7 +198,9 @@ function ResumeUpload() {
             )}
 
             {submitError && (
-              <p className="mt-3 text-center text-sm text-red-700">{submitError}</p>
+              <p className="mt-3 text-center text-sm text-red-700">
+                {submitError}
+              </p>
             )}
           </div>
 
