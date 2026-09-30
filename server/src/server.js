@@ -1,10 +1,11 @@
-require ("dotenv").config();
+require("dotenv").config();
 
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const mockAnalysis = require('./data/mockAnalysis');
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const mockAnalysis = require("./data/mockAnalysis");
+const { extractResumeText } = require("./services/resumeParser");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,50 +15,59 @@ app.use(express.json());
 
 //Multer setup to keep files in memory and under 10 MB
 const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {fileSize: 10 * 1024 * 1024},
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 app.get("/api/health", (req, res) => {
-    res.json({message: "Backed is running"})
+  res.json({ message: "Backed is running" });
 });
 
 // Analyze Endpoint
-app.post("/api/analyze", upload.single("resume"), (req, res) => {
-    const file = req.file;
-    const jobDescription = req.body.jobDescription;
+app.post("/api/analyze", upload.single("resume"), async (req, res) => {
+  const file = req.file;
+  const jobDescription = req.body.jobDescription;
 
-    if(!file){
-        return res.status(400).json({error: "Resume file is required"});
-    }
+  if (!file) {
+    return res.status(400).json({ error: "Resume file is required" });
+  }
 
-    const allowed = [".pdf", ".docx", ".txt"];
-    const extension = path.extname(file.originalname).toLowerCase();
-    if(!allowed.includes(extension)){
-        return res.status(400).json({error: "Only PDF, DOCX, or TXT files are allowed."});
-    }
+  const allowed = [".pdf", ".docx", ".txt"];
+  const extension = path.extname(file.originalname).toLowerCase();
+  if (!allowed.includes(extension)) {
+    return res
+      .status(400)
+      .json({ error: "Only PDF, DOCX, or TXT files are allowed." });
+  }
 
-    if(!jobDescription || !jobDescription.trim()){
-        return res.status(400).json({error: "Job Description is required"})
-    };
+  if (!jobDescription || !jobDescription.trim()) {
+    return res.status(400).json({ error: "Job Description is required" });
+  }
 
-    console.log(`Recieved ${file.originalname} ( ${file.size} bytes)`)
+  const resumeText = await extractResumeText(file);
 
-    res.json({
-        id: "demo",
-        analysis: {...mockAnalysis, fileName: file.originalname},
-    });
+  console.log(`Received ${file.originalname} (${file.size} bytes)`);
+  console.log(`Extracted ${resumeText.length} characters`);
+  console.log("Preview:\n", resumeText.slice(0, 500));
 
+  res.json({
+    id: "demo",
+    analysis: { ...mockAnalysis, fileName: file.originalname },
+  });
 });
 
 app.use((err, req, res, next) => {
-    if(err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE"){
-        return res.status(400).json({error: "File must be 10MB or smaller"});
-    }
-    console.error(err);
-    res.status(500).json({error:"Something went wrong on the server"});
+  if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ error: "File must be 10MB or smaller" });
+  }
+
+  if (err.statusCode){
+    return res.status(err.statusCode).json({ error: err.message })
+  }
+  console.error(err);
+  res.status(500).json({ error: "Something went wrong on the server" });
 });
 
-app.listen(PORT, () =>{
-    console.log(`Server running at http://localhost:${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
